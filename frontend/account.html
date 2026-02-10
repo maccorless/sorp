@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Account Management - SARP</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="account-container">
+        <div class="account-header">
+            <h1>Account Management</h1>
+            <p>Manage your contact information and security settings</p>
+        </div>
+
+        <div id="error-container"></div>
+        <div id="success-container"></div>
+
+        <!-- Email Section -->
+        <div class="account-section">
+            <h2>Email Addresses</h2>
+            <div class="benefit-box">
+                <strong>
+                    <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M8 0L10.5 5.5L16 6.5L12 10.5L13 16L8 13L3 16L4 10.5L0 6.5L5.5 5.5L8 0Z" fill="currentColor"/>
+                    </svg>
+                    Enable Multiple Device Access
+                </strong>
+                <p style="margin: 0; color: #059669;">Adding an email unlocks multiple device access! Without an email, you're limited to 3 devices.</p>
+            </div>
+            <ul id="email-list" class="contact-list">
+                <!-- Populated by JavaScript -->
+            </ul>
+            <div id="add-email-form" class="add-contact-form" style="display: none;">
+                <div class="form-group">
+                    <label for="new-email">New Email Address</label>
+                    <input type="email" id="new-email" placeholder="name@example.com">
+                </div>
+                <div style="display: flex; gap: 0.75rem;">
+                    <button id="save-email-btn" class="btn btn-small">Save Email</button>
+                    <button id="cancel-email-btn" class="btn btn-small btn-secondary">Cancel</button>
+                </div>
+            </div>
+            <button id="add-email-btn" class="btn btn-small" style="margin-top: 1rem;">
+                + Add Email Address
+            </button>
+        </div>
+
+        <!-- Phone Section -->
+        <div class="account-section">
+            <h2>Phone Numbers</h2>
+            <ul id="phone-list" class="contact-list">
+                <!-- Populated by JavaScript -->
+            </ul>
+            <div id="add-phone-form" class="add-contact-form" style="display: none;">
+                <div class="form-group">
+                    <label for="new-phone">New Phone Number</label>
+                    <input type="tel" id="new-phone" placeholder="+1 (555) 123-4567">
+                </div>
+                <div style="display: flex; gap: 0.75rem;">
+                    <button id="save-phone-btn" class="btn btn-small">Save Phone</button>
+                    <button id="cancel-phone-btn" class="btn btn-small btn-secondary">Cancel</button>
+                </div>
+            </div>
+            <button id="add-phone-btn" class="btn btn-small" style="margin-top: 1rem;">
+                + Add Phone Number
+            </button>
+        </div>
+
+        <div class="account-section">
+            <div style="display: flex; gap: 1rem; flex-wrap: wrap;">
+                <button onclick="window.location.href='/mediazone/index.html'" class="btn" style="flex: 1;">
+                    ← Back to MediaZone
+                </button>
+                <button id="logout-btn" class="btn btn-secondary" style="flex: 1;">
+                    Logout
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script src="account.js"></script>
+</body>
+</html>

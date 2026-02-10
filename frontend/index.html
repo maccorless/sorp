@@ -1,0 +1,307 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SARP - Son of Access Request Portal</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="login-container">
+        <div class="login-left">
+            <h1>SARP</h1>
+            <p class="subtitle">Son of Access Request Portal</p>
+            <p>
+                Experience seamless Single Sign-On authentication across multiple applications.
+                Choose from three secure authentication methods and enjoy 90-day device persistence
+                for uninterrupted access to your workspace.
+            </p>
+            <div style="margin-top: 2rem; padding: 1.5rem; background: rgba(255, 255, 255, 0.1); border-radius: 12px; border-left: 4px solid var(--secondary);">
+                <strong style="display: block; margin-bottom: 1rem; font-size: 1.1rem;">Available Applications:</strong>
+                <ul style="list-style: none; padding: 0; margin: 0; display: grid; gap: 0.75rem;">
+                    <li style="display: flex; align-items: center; gap: 0.75rem;">
+                        <span style="background: var(--secondary); width: 8px; height: 8px; border-radius: 50%; display: inline-block;"></span>
+                        Transportation
+                    </li>
+                    <li style="display: flex; align-items: center; gap: 0.75rem;">
+                        <span style="background: var(--secondary); width: 8px; height: 8px; border-radius: 50%; display: inline-block;"></span>
+                        Wifi
+                    </li>
+                    <li style="display: flex; align-items: center; gap: 0.75rem;">
+                        <span style="background: var(--secondary); width: 8px; height: 8px; border-radius: 50%; display: inline-block;"></span>
+                        MediaZone
+                    </li>
+                    <li style="display: flex; align-items: center; gap: 0.75rem;">
+                        <span style="background: var(--secondary); width: 8px; height: 8px; border-radius: 50%; display: inline-block;"></span>
+                        Remote CIS
+                    </li>
+                    <li style="display: flex; align-items: center; gap: 0.75rem;">
+                        <span style="background: var(--secondary); width: 8px; height: 8px; border-radius: 50%; display: inline-block;"></span>
+                        Weather
+                    </li>
+                    <li style="display: flex; align-items: center; gap: 0.75rem;">
+                        <span style="background: var(--secondary); width: 8px; height: 8px; border-radius: 50%; display: inline-block;"></span>
+                        SEAT
+                    </li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="login-right">
+            <div class="login-card">
+                <h2>Welcome to Media Zone</h2>
+                <p class="subtitle-text">Sign in to continue to your applications</p>
+
+                <div id="error-container"></div>
+                <div id="success-container"></div>
+
+                <div class="auth-methods">
+                    <button class="auth-tab active" data-method="accreditation">
+                        <span>Accreditation</span>
+                    </button>
+                    <button class="auth-tab" data-method="token">
+                        <span>Token</span>
+                    </button>
+                    <button class="auth-tab" data-method="otp" id="otp-tab" style="display: none;">
+                        <span>Email / Phone</span>
+                    </button>
+                </div>
+
+                <!-- Accreditation Form -->
+                <form id="accreditation-form" class="auth-form active">
+                    <div class="form-group">
+                        <label for="accreditation-number" style="display: flex; align-items: center; gap: 0.5rem;">
+                            Registration Number
+                            <span class="help-icon" id="reg-help-icon" title="Where can I find my registration number?">
+                                <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg" style="cursor: pointer;">
+                                    <circle cx="8" cy="8" r="7" stroke="currentColor" stroke-width="1.5" fill="none"/>
+                                    <path d="M8 11.5V8M8 5.5H8.01" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+                                </svg>
+                            </span>
+                        </label>
+                        <input
+                            type="text"
+                            id="accreditation-number"
+                            placeholder="Enter 8-digit number"
+                            maxlength="8"
+                            required
+                            autocomplete="username">
+                    </div>
+                    <div class="form-group">
+                        <label for="accreditation-cvv">CVV Code</label>
+                        <input
+                            type="password"
+                            id="accreditation-cvv"
+                            placeholder="Enter 4-digit CVV"
+                            maxlength="4"
+                            required
+                            autocomplete="current-password">
+                    </div>
+                    <div class="form-group" style="margin-bottom: 1rem;">
+                        <label class="checkbox-label" style="display: flex; align-items: center; gap: 0.5rem; cursor: pointer;">
+                            <input type="checkbox" id="accred-kiosk-mode" style="width: auto;">
+                            <span>Kiosk/Workstation Mode (enable multiple devices)</span>
+                        </label>
+                        <p style="font-size: 0.8125rem; color: var(--text-secondary); margin-top: 0.5rem; margin-left: 1.5rem;">
+                            Check this to add an email/phone for multiple device access
+                        </p>
+                    </div>
+                    <button type="submit" class="btn">Sign In with Accreditation</button>
+                </form>
+
+                <!-- Token Form -->
+                <form id="token-form" class="auth-form">
+                    <div class="form-group">
+                        <label for="token">Third-Party Token</label>
+                        <input
+                            type="text"
+                            id="token"
+                            placeholder="####-####-####-####"
+                            maxlength="19"
+                            required
+                            autocomplete="off">
+                    </div>
+                    <div class="form-group" style="margin-bottom: 1rem;">
+                        <label class="checkbox-label" style="display: flex; align-items: center; gap: 0.5rem; cursor: pointer;">
+                            <input type="checkbox" id="token-kiosk-mode" style="width: auto;">
+                            <span>Kiosk/Workstation Mode (enable multiple devices)</span>
+                        </label>
+                        <p style="font-size: 0.8125rem; color: var(--text-secondary); margin-top: 0.5rem; margin-left: 1.5rem;">
+                            Check this to add an email/phone for multiple device access
+                        </p>
+                    </div>
+                    <button type="submit" class="btn">Sign In with Token</button>
+                </form>
+
+                <!-- Email/Phone OTP Form -->
+                <form id="otp-form" class="auth-form">
+                    <div style="background: #FFF3CD; border-left: 4px solid #FFC107; padding: 1rem; border-radius: 8px; margin-bottom: 1.5rem; font-size: 0.875rem;">
+                        <strong>⚠️ Note:</strong> You must have previously registered and added an email/phone to use this method.
+                    </div>
+
+                    <div id="otp-request-step">
+                        <div class="form-group">
+                            <label style="margin-bottom: 0.75rem; display: block;">Contact Method</label>
+                            <div style="display: flex; gap: 1.5rem;">
+                                <label class="radio-label" style="display: flex; align-items: center; gap: 0.5rem; cursor: pointer;">
+                                    <input type="radio" name="contact-type" value="email" checked style="width: auto;">
+                                    <span>📧 Email Address</span>
+                                </label>
+                                <label class="radio-label" style="display: flex; align-items: center; gap: 0.5rem; cursor: pointer;">
+                                    <input type="radio" name="contact-type" value="phone" style="width: auto;">
+                                    <span>📱 Phone Number</span>
+                                </label>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="contact-value">Email or Phone</label>
+                            <input
+                                type="text"
+                                id="contact-value"
+                                placeholder="Enter your registered contact"
+                                required
+                                autocomplete="email">
+                        </div>
+                        <button type="button" id="request-otp-btn" class="btn">Request One-Time Code</button>
+                    </div>
+
+                    <div id="otp-verify-step" style="display: none;">
+                        <div class="otp-display">
+                            <p>Your One-Time Code (Demo Mode):</p>
+                            <strong id="otp-code-display">------</strong>
+                        </div>
+                        <div class="form-group">
+                            <label for="otp-code">Enter 6-Digit Code</label>
+                            <input
+                                type="text"
+                                id="otp-code"
+                                placeholder="000000"
+                                maxlength="6"
+                                required
+                                autocomplete="one-time-code">
+                        </div>
+                        <button type="submit" class="btn">Verify & Sign In</button>
+                        <button type="button" id="back-to-request" class="btn btn-secondary" style="margin-top: 0.75rem;">
+                            ← Back to Contact Entry
+                        </button>
+                    </div>
+                </form>
+
+                <!-- Admin Access & Logout Buttons -->
+                <div style="margin-top: 2rem; padding-top: 1.5rem; border-top: 1px solid var(--border); text-align: center; display: flex; gap: 0.75rem; justify-content: center;">
+                    <button onclick="window.location.href='/frontend/admin.html'" class="btn btn-secondary btn-small" style="width: auto;">
+                        🔧 Admin Dashboard
+                    </button>
+                    <button id="main-logout-btn" class="btn btn-secondary btn-small" style="width: auto; display: none;">
+                        🚪 Logout
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Kiosk Mode Modal -->
+    <div id="kiosk-modal" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.5); z-index: 1000; align-items: center; justify-content: center;">
+        <div style="background: white; border-radius: 16px; padding: 2.5rem; max-width: 500px; width: 90%; box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);">
+            <h2 style="color: var(--text-primary); margin-bottom: 1rem; font-size: 1.5rem;">Enable Unlimited Devices</h2>
+            <p style="color: var(--text-secondary); margin-bottom: 2rem; line-height: 1.6;">
+                Add an email or phone number to enable multiple device access for kiosks and workstations.
+                You can use this contact for future OTP login.
+            </p>
+
+            <div id="kiosk-modal-content">
+                <div class="form-group">
+                    <label style="margin-bottom: 0.75rem; display: block;">Choose Contact Type</label>
+                    <div style="display: flex; gap: 1.5rem; margin-bottom: 1.5rem;">
+                        <label class="radio-label" style="display: flex; align-items: center; gap: 0.5rem; cursor: pointer;">
+                            <input type="radio" name="kiosk-contact-type" value="email" checked style="width: auto;">
+                            <span>📧 Email Address</span>
+                        </label>
+                        <label class="radio-label" style="display: flex; align-items: center; gap: 0.5rem; cursor: pointer;">
+                            <input type="radio" name="kiosk-contact-type" value="phone" style="width: auto;">
+                            <span>📱 Phone Number</span>
+                        </label>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="kiosk-contact-value">Contact Information</label>
+                    <input
+                        type="text"
+                        id="kiosk-contact-value"
+                        placeholder="Enter email or phone"
+                        style="width: 100%; padding: 0.875rem 1rem; border: 1.5px solid var(--border); border-radius: 8px; font-size: 1rem;">
+                </div>
+
+                <div id="kiosk-error" style="display: none; background: #FEE; color: #C33; padding: 0.75rem; border-radius: 8px; margin-bottom: 1rem; font-size: 0.875rem;"></div>
+
+                <div style="display: flex; gap: 1rem; margin-top: 1.5rem;">
+                    <button id="kiosk-add-btn" class="btn" style="flex: 1;">Add Contact & Continue</button>
+                    <button id="kiosk-skip-btn" class="btn btn-secondary" style="flex: 1;">Skip for Now</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Registration Help Popup -->
+    <div id="reg-help-popup" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: 9999; background: rgba(0, 0, 0, 0.7); align-items: center; justify-content: center;">
+        <div style="position: relative; max-width: 90%; max-height: 90vh; overflow: auto;">
+            <img src="registration-help.png" alt="Where to find registration number" style="display: block; max-width: 100%; height: auto; border-radius: 8px; box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);">
+        </div>
+    </div>
+
+    <script src="auth.js"></script>
+    <script>
+        // Show/hide Email/Phone tab based on kiosk mode checkboxes
+        const accredKioskCheckbox = document.getElementById('accred-kiosk-mode');
+        const tokenKioskCheckbox = document.getElementById('token-kiosk-mode');
+        const otpTab = document.getElementById('otp-tab');
+
+        function updateOTPTabVisibility() {
+            if (accredKioskCheckbox.checked || tokenKioskCheckbox.checked) {
+                otpTab.style.display = 'block';
+            } else {
+                otpTab.style.display = 'none';
+                // If OTP tab is active when hidden, switch to accreditation tab
+                if (otpTab.classList.contains('active')) {
+                    document.querySelector('[data-method="accreditation"]').click();
+                }
+            }
+        }
+
+        if (accredKioskCheckbox) {
+            accredKioskCheckbox.addEventListener('change', updateOTPTabVisibility);
+        }
+        if (tokenKioskCheckbox) {
+            tokenKioskCheckbox.addEventListener('change', updateOTPTabVisibility);
+        }
+
+        // Registration help popup functionality
+        const helpIcon = document.getElementById('reg-help-icon');
+        const helpPopup = document.getElementById('reg-help-popup');
+
+        if (helpIcon && helpPopup) {
+            // Show popup when icon is clicked
+            helpIcon.addEventListener('click', (e) => {
+                e.preventDefault();
+                e.stopPropagation();
+                helpPopup.style.display = 'flex';
+            });
+
+            // Hide popup when clicking outside the image
+            helpPopup.addEventListener('click', (e) => {
+                if (e.target === helpPopup) {
+                    helpPopup.style.display = 'none';
+                }
+            });
+
+            // Hide popup when ESC key is pressed
+            document.addEventListener('keydown', (e) => {
+                if (e.key === 'Escape' && helpPopup.style.display === 'flex') {
+                    helpPopup.style.display = 'none';
+                }
+            });
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,521 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MediaZone - Olympic Portal</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', sans-serif;
+            background: #f5f5f5;
+        }
+
+        /* Top Header */
+        .top-header {
+            background: #1a4d5d;
+            color: white;
+            padding: 0.75rem 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .top-header-left {
+            display: flex;
+            align-items: center;
+            gap: 1.5rem;
+        }
+
+        .live-video-btn {
+            background: #d32f2f;
+            color: white;
+            border: none;
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            font-weight: 600;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .live-indicator {
+            width: 8px;
+            height: 8px;
+            background: white;
+            border-radius: 50%;
+        }
+
+        .header-link {
+            color: white;
+            text-decoration: none;
+            font-size: 0.9rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .top-header-right {
+            display: flex;
+            align-items: center;
+            gap: 1.5rem;
+        }
+
+        .search-bar {
+            background: rgba(255, 255, 255, 0.15);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            border-radius: 4px;
+            padding: 0.5rem 1rem;
+            color: white;
+            width: 200px;
+        }
+
+        .search-bar::placeholder {
+            color: rgba(255, 255, 255, 0.7);
+        }
+
+        .logout-btn {
+            background: transparent;
+            border: 1px solid rgba(255, 255, 255, 0.5);
+            color: white;
+            padding: 0.4rem 1rem;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 0.9rem;
+        }
+
+        .logout-btn:hover {
+            background: rgba(255, 255, 255, 0.1);
+        }
+
+        /* Hero Section */
+        .hero {
+            background: linear-gradient(135deg, #2a5f6f 0%, #1a4d5d 100%);
+            padding: 2rem;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .hero::after {
+            content: '';
+            position: absolute;
+            right: 0;
+            bottom: 0;
+            width: 60%;
+            height: 100%;
+            background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 200"><path d="M0,100 Q200,150 400,100 T800,100 L800,200 L0,200 Z" fill="rgba(255,255,255,0.05)"/></svg>') no-repeat;
+            background-size: cover;
+        }
+
+        .hero-content {
+            max-width: 1400px;
+            margin: 0 auto;
+            position: relative;
+            z-index: 1;
+        }
+
+        .mediazone-title {
+            font-size: 3rem;
+            color: white;
+            font-weight: 700;
+            margin-bottom: 1rem;
+        }
+
+        .sponsors {
+            position: absolute;
+            top: 2rem;
+            right: 2rem;
+            display: flex;
+            gap: 1rem;
+            align-items: center;
+        }
+
+        .sponsor-logo {
+            background: white;
+            padding: 0.5rem 1rem;
+            border-radius: 4px;
+            font-weight: 700;
+            font-size: 0.9rem;
+        }
+
+        .olympic-logo {
+            color: #1a4d5d;
+        }
+
+        /* Featured Content Bar */
+        .featured-bar {
+            background: #2a5f6f;
+            color: white;
+            padding: 1rem 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .featured-title {
+            font-size: 0.95rem;
+        }
+
+        .media-controls {
+            display: flex;
+            gap: 1rem;
+        }
+
+        .media-btn {
+            background: rgba(255, 255, 255, 0.2);
+            border: none;
+            color: white;
+            padding: 0.5rem;
+            cursor: pointer;
+            border-radius: 4px;
+        }
+
+        /* Navigation */
+        .main-nav {
+            background: white;
+            border-bottom: 1px solid #ddd;
+            padding: 0 2rem;
+        }
+
+        .nav-links {
+            max-width: 1400px;
+            margin: 0 auto;
+            display: flex;
+            gap: 2rem;
+            list-style: none;
+        }
+
+        .nav-links a {
+            display: block;
+            padding: 1rem 0;
+            color: #333;
+            text-decoration: none;
+            font-weight: 500;
+            border-bottom: 3px solid transparent;
+        }
+
+        .nav-links a:hover,
+        .nav-links a.active {
+            border-bottom-color: #d32f2f;
+            color: #d32f2f;
+        }
+
+        /* Main Content */
+        .main-content {
+            max-width: 1400px;
+            margin: 2rem auto;
+            padding: 0 2rem;
+            display: grid;
+            grid-template-columns: 1fr 350px;
+            gap: 2rem;
+        }
+
+        /* Today Section */
+        .today-section {
+            background: white;
+            padding: 1.5rem;
+            border-radius: 8px;
+            margin-bottom: 2rem;
+        }
+
+        .today-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+        }
+
+        .today-date {
+            font-weight: 700;
+            color: #333;
+        }
+
+        .schedule-link {
+            color: #1a4d5d;
+            text-decoration: none;
+            font-weight: 600;
+        }
+
+        .sports-icons {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(80px, 1fr));
+            gap: 1rem;
+        }
+
+        .sport-icon {
+            aspect-ratio: 1;
+            background: #f5f5f5;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2rem;
+            position: relative;
+            border: 2px solid transparent;
+        }
+
+        .sport-icon.live {
+            border-color: #d32f2f;
+        }
+
+        .sport-icon.live::before {
+            content: '';
+            position: absolute;
+            top: 8px;
+            right: 8px;
+            width: 10px;
+            height: 10px;
+            background: #d32f2f;
+            border-radius: 50%;
+        }
+
+        /* News Section */
+        .section-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+        }
+
+        .section-title {
+            font-size: 1.75rem;
+            font-weight: 700;
+            color: #333;
+        }
+
+        .news-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .news-card {
+            background: white;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+
+        .news-card-image {
+            width: 100%;
+            height: 200px;
+            background: linear-gradient(135deg, #1a4d5d 0%, #2a5f6f 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 3rem;
+            position: relative;
+        }
+
+        .live-badge {
+            position: absolute;
+            top: 1rem;
+            right: 1rem;
+            background: #d32f2f;
+            color: white;
+            padding: 0.25rem 0.75rem;
+            border-radius: 12px;
+            font-size: 0.75rem;
+            font-weight: 700;
+            text-transform: uppercase;
+        }
+
+        .news-card-content {
+            padding: 1rem;
+        }
+
+        .news-category {
+            color: #666;
+            font-size: 0.85rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .news-time {
+            color: #999;
+            font-size: 0.85rem;
+        }
+
+        /* Flash Quotes */
+        .flash-quotes {
+            background: white;
+            padding: 1.5rem;
+            border-radius: 8px;
+        }
+
+        .quote-item {
+            padding: 1rem 0;
+            border-bottom: 1px solid #eee;
+        }
+
+        .quote-item:last-child {
+            border-bottom: none;
+        }
+
+        .quote-sport {
+            color: #666;
+            font-size: 0.85rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .quote-title {
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 0.25rem;
+        }
+
+        .quote-time {
+            color: #999;
+            font-size: 0.85rem;
+        }
+    </style>
+</head>
+<body>
+    <!-- Top Header -->
+    <div class="top-header">
+        <div class="top-header-left">
+            <button class="live-video-btn">
+                <span class="live-indicator"></span>
+                Live Video (1)
+            </button>
+            <a href="#" class="header-link">🔔</a>
+            <a href="#" class="header-link">👤 Account Settings</a>
+        </div>
+        <div class="top-header-right">
+            <a href="#" class="header-link">Games Contacts</a>
+            <a href="#" class="header-link">Media Handbook</a>
+            <a href="#" class="header-link">❓</a>
+            <a href="#" class="header-link">🖨️</a>
+            <a href="#" class="header-link">Ask OIS</a>
+            <span style="color: white;">EN | FR</span>
+            <input type="search" class="search-bar" placeholder="Type here...">
+            <button class="logout-btn" id="logout-btn">🚪 Log out</button>
+        </div>
+    </div>
+
+    <!-- Hero Section -->
+    <div class="hero">
+        <div class="sponsors">
+            <div class="sponsor-logo">Deloitte.</div>
+            <div class="sponsor-logo olympic-logo">🏅 2024</div>
+            <div class="sponsor-logo olympic-logo">♿ 2024</div>
+        </div>
+        <div class="hero-content">
+            <h1 class="mediazone-title">MediaZone</h1>
+        </div>
+    </div>
+
+    <!-- Featured Content Bar -->
+    <div class="featured-bar">
+        <div class="featured-title">
+            Figure Skating Review: BEAUDRY and CIZERON (FRA) hold slender lead over CHOCK and BATES (USA) after rhythm dance
+        </div>
+        <div class="media-controls">
+            <button class="media-btn">⏮️</button>
+            <button class="media-btn">⏸️</button>
+            <button class="media-btn">⏭️</button>
+        </div>
+    </div>
+
+    <!-- Main Navigation -->
+    <nav class="main-nav">
+        <ul class="nav-links">
+            <li><a href="#" class="active">Home</a></li>
+            <li><a href="#">News</a></li>
+            <li><a href="#">Schedule & Results</a></li>
+            <li><a href="#">Participants</a></li>
+            <li><a href="#">NOCs</a></li>
+            <li><a href="#">Sports</a></li>
+            <li><a href="#">Records</a></li>
+            <li><a href="#">Medals</a></li>
+            <li><a href="#">Ceremonies</a></li>
+            <li><a href="#">General</a></li>
+            <li><a href="#">Competition Format and Rules</a></li>
+        </ul>
+    </nav>
+
+    <!-- Main Content -->
+    <div class="main-content">
+        <div class="main-column">
+            <!-- Today Section -->
+            <div class="today-section">
+                <div class="today-header">
+                    <div>
+                        <div style="color: #999; font-size: 0.85rem;">TODAY</div>
+                        <div class="today-date">10 February</div>
+                    </div>
+                    <a href="#" class="schedule-link">Go to schedule →</a>
+                </div>
+                <div class="sports-icons">
+                    <div class="sport-icon live">⛸️</div>
+                    <div class="sport-icon">🎿</div>
+                    <div class="sport-icon live">🏒</div>
+                    <div class="sport-icon">🛷</div>
+                    <div class="sport-icon live">🏂</div>
+                    <div class="sport-icon">⛷️</div>
+                    <div class="sport-icon">🥌</div>
+                    <div class="sport-icon">🎿</div>
+                    <div class="sport-icon">🏂</div>
+                    <div class="sport-icon">⛸️</div>
+                    <div class="sport-icon">🛷</div>
+                </div>
+            </div>
+
+            <!-- News Section -->
+            <div class="section-header">
+                <h2 class="section-title">News →</h2>
+            </div>
+            <div class="news-grid">
+                <div class="news-card">
+                    <div class="news-card-image">
+                        <span class="live-badge">🔴 LIVE</span>
+                        ⛸️
+                    </div>
+                    <div class="news-card-content">
+                        <div class="news-category">Short Track Speed Skating</div>
+                        <div class="news-time">10 Feb 14:27</div>
+                    </div>
+                </div>
+                <div class="news-card">
+                    <div class="news-card-image">
+                        🥌
+                    </div>
+                    <div class="news-card-content">
+                        <div class="news-category">Curling</div>
+                        <div class="news-time">10 Feb 12:24</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Sidebar -->
+        <aside>
+            <div class="flash-quotes">
+                <div class="section-header" style="margin-bottom: 1rem;">
+                    <h3 class="section-title" style="font-size: 1.25rem;">Flash Quotes →</h3>
+                </div>
+                <div class="quote-item">
+                    <div class="quote-sport">🛷 SHORT TRACK SPEED SKATING</div>
+                    <div class="quote-title">Mixed Team Relay - SIGHEL, FONTANA (ITA): gold</div>
+                    <div class="quote-time">Tue 10 Feb 14:41</div>
+                </div>
+                <div class="quote-item">
+                    <div class="quote-sport">⛷️ CROSS-COUNTRY SKIING</div>
+                    <div class="quote-title">Men's Sprint Classic - KLAEBO (NOR): gold</div>
+                    <div class="quote-time">Tue 10 Feb 14:25</div>
+                </div>
+            </div>
+        </aside>
+    </div>
+
+    <script src="mediazone.js"></script>
+</body>
+</html>

@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard - SARP</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="admin-container">
+        <div class="admin-header">
+            <h1>SARP Administration</h1>
+            <p>System-wide user registration and authentication overview</p>
+        </div>
+
+        <div class="admin-table-container">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem;">
+                <h2 style="margin: 0; color: var(--text-primary); font-size: 1.25rem;">Registered Users</h2>
+                <div style="display: flex; gap: 0.5rem; align-items: center;">
+                    <div style="width: 8px; height: 8px; background: var(--success); border-radius: 50%;"></div>
+                    <span style="font-size: 0.875rem; color: var(--text-secondary);">Auto-refreshing every 10s</span>
+                </div>
+            </div>
+
+            <table>
+                <thead>
+                    <tr>
+                        <th>User ID</th>
+                        <th>Accreditation</th>
+                        <th>Token</th>
+                        <th>Linked Contacts</th>
+                        <th>Active Devices</th>
+                        <th>Registered</th>
+                    </tr>
+                </thead>
+                <tbody id="users-table">
+                    <tr>
+                        <td colspan="6" style="text-align: center; padding: 3rem; color: var(--text-secondary);">
+                            <div class="loading" style="margin: 0 auto 1rem;"></div>
+                            Loading user data...
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <div style="margin-top: 2rem; text-align: center;">
+            <button onclick="window.location.href='/'" class="btn btn-secondary">
+                ← Back to Login
+            </button>
+        </div>
+    </div>
+
+    <script>
+        const API_BASE = 'http://localhost:5000/api';
+
+        async function loadUsers() {
+            try {
+                const response = await fetch(`${API_BASE}/admin/registrations`);
+                const data = await response.json();
+
+                displayUsers(data.users);
+            } catch (error) {
+                console.error('Failed to load users:', error);
+                document.getElementById('users-table').innerHTML = `
+                    <tr>
+                        <td colspan="6" style="text-align: center; padding: 3rem; color: var(--error);">
+                            <strong>Failed to load data</strong><br>
+                            <span style="font-size: 0.875rem;">Please check if the server is running</span>
+                        </td>
+                    </tr>
+                `;
+            }
+        }
+
+        function displayUsers(users) {
+            const tbody = document.getElementById('users-table');
+
+            if (users.length === 0) {
+                tbody.innerHTML = `
+                    <tr>
+                        <td colspan="6" style="text-align: center; padding: 3rem; color: var(--text-secondary);">
+                            <strong>No users registered yet</strong><br>
+                            <span style="font-size: 0.875rem;">Users will appear here after registration</span>
+                        </td>
+                    </tr>
+                `;
+                return;
+            }
+
+            tbody.innerHTML = users.map(user => {
+                const contacts = user.contacts.map(c => {
+                    const icon = c.contact_type === 'email' ? '📧' : '📱';
+                    return `<span class="contact-tag">${icon} ${c.contact_value}</span>`;
+                }).join('');
+
+                const date = new Date(user.created_at).toLocaleDateString('en-US', {
+                    month: 'short',
+                    day: 'numeric',
+                    year: 'numeric'
+                });
+
+                const deviceBadge = user.device_count > 0
+                    ? `<span style="background: var(--success); color: white; padding: 0.25rem 0.5rem; border-radius: 999px; font-size: 0.75rem; font-weight: 600;">${user.device_count}</span>`
+                    : `<span style="color: var(--text-light);">0</span>`;
+
+                return `
+                    <tr>
+                        <td><strong>#${user.id}</strong></td>
+                        <td>${user.accreditation_number || '<span style="color: var(--text-light);">—</span>'}</td>
+                        <td>${user.token || '<span style="color: var(--text-light);">—</span>'}</td>
+                        <td>${contacts || '<span style="color: var(--text-light);">None</span>'}</td>
+                        <td>${deviceBadge}</td>
+                        <td style="font-size: 0.875rem; color: var(--text-secondary);">${date}</td>
+                    </tr>
+                `;
+            }).join('');
+        }
+
+        // Load users on page load
+        loadUsers();
+
+        // Auto-refresh every 10 seconds
+        setInterval(loadUsers, 10000);
+    </script>
+</body>
+</html>
