@@ -2,7 +2,8 @@ import sqlite3
 from datetime import datetime, timedelta
 import os
 
-DB_PATH = os.path.join(os.path.dirname(os.path.dirname(__file__)), 'sarp.db')
+# Use /data/sarp.db on Railway (persistent volume), fall back to local path for development
+DB_PATH = os.environ.get('DATABASE_PATH', os.path.join(os.path.dirname(os.path.dirname(__file__)), 'sarp.db'))
 
 def init_db():
     """Initialize the database with required tables."""
