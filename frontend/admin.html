@@ -100,8 +100,13 @@
                     year: 'numeric'
                 });
 
+                // Build device tooltip
+                const deviceTooltip = user.devices && user.devices.length > 0
+                    ? user.devices.map((d, i) => `Device ${i + 1}: ${d.device_id}`).join('\n')
+                    : 'No active devices';
+
                 const deviceBadge = user.device_count > 0
-                    ? `<span style="background: var(--success); color: white; padding: 0.25rem 0.5rem; border-radius: 999px; font-size: 0.75rem; font-weight: 600;">${user.device_count}</span>`
+                    ? `<span title="${deviceTooltip}" style="background: var(--success); color: white; padding: 0.25rem 0.5rem; border-radius: 999px; font-size: 0.75rem; font-weight: 600; cursor: help;">${user.device_count}</span>`
                     : `<span style="color: var(--text-light);">0</span>`;
 
                 return `

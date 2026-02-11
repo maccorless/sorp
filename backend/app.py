@@ -46,6 +46,9 @@ def auth_accreditation():
     session_token, error = db.create_device(device_id, user_id)
 
     if error:
+        # Customize error message for accreditation
+        if 'Device limit' in error:
+            error = 'You are over the limit of logins for your accreditation. You must logout of an active session in order to add a new session.'
         return jsonify({'success': False, 'error': error}), 403
 
     return jsonify({
@@ -80,6 +83,9 @@ def auth_token():
     session_token, error = db.create_device(device_id, user_id)
 
     if error:
+        # Customize error message for token
+        if 'Device limit' in error:
+            error = 'You are over the limit of activations for your token. You must logout of an active session in order to add a new session.'
         return jsonify({'success': False, 'error': error}), 403
 
     return jsonify({

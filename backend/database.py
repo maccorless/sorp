@@ -309,9 +309,18 @@ def get_all_users_with_details():
 
     users = [dict(u) for u in cursor.fetchall()]
 
-    # Get contacts for each user
+    # Get contacts and devices for each user
     for user in users:
         user['contacts'] = get_user_contacts(user['id'])
+
+        # Get active devices
+        cursor.execute('''
+            SELECT device_id, created_at, expires_at
+            FROM devices
+            WHERE user_id = ? AND expires_at > ?
+            ORDER BY created_at DESC
+        ''', (user['id'], datetime.now()))
+        user['devices'] = [dict(d) for d in cursor.fetchall()]
 
     conn.close()
     return users
