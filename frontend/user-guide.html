@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>How SARP Works - User Guide</title>
+    <link rel="stylesheet" href="styles.css">
+    <style>
+        .guide-container {
+            max-width: 800px;
+            margin: 2rem auto;
+            padding: 2rem;
+            background: white;
+            border-radius: 16px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+        }
+        .guide-header {
+            text-align: center;
+            margin-bottom: 2rem;
+            padding-bottom: 1.5rem;
+            border-bottom: 2px solid var(--border);
+        }
+        .guide-header h1 {
+            color: var(--primary);
+            margin-bottom: 0.5rem;
+        }
+        .guide-section {
+            margin-bottom: 2rem;
+        }
+        .guide-section h2 {
+            color: var(--text-primary);
+            font-size: 1.25rem;
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        .guide-section p, .guide-section ul {
+            color: var(--text-secondary);
+            line-height: 1.8;
+            margin-bottom: 1rem;
+        }
+        .guide-section ul {
+            padding-left: 1.5rem;
+        }
+        .guide-section li {
+            margin-bottom: 0.5rem;
+        }
+        .highlight-box {
+            background: #F0F7FF;
+            border-left: 4px solid var(--primary);
+            padding: 1rem 1.5rem;
+            border-radius: 8px;
+            margin: 1rem 0;
+        }
+        .note-box {
+            background: #FFF3CD;
+            border-left: 4px solid #FFC107;
+            padding: 1rem 1.5rem;
+            border-radius: 8px;
+            margin: 1rem 0;
+        }
+        .step-number {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 28px;
+            height: 28px;
+            background: var(--primary);
+            color: white;
+            border-radius: 50%;
+            font-weight: 600;
+            font-size: 0.875rem;
+        }
+    </style>
+</head>
+<body style="background: linear-gradient(135deg, #0A1628 0%, #1a3d47 100%); min-height: 100vh; padding: 2rem 1rem;">
+    <div class="guide-container">
+        <div class="guide-header">
+            <h1>How SARP Works</h1>
+            <p style="color: var(--text-secondary); margin: 0;">Simple guide to authentication and access</p>
+        </div>
+
+        <div class="guide-section">
+            <h2><span class="step-number">1</span> What is SARP?</h2>
+            <p>
+                SARP (Son of Access Request Portal) is a Single Sign-On system that lets you access multiple applications
+                with one login. Once you sign in, you can access all authorized applications without logging in again.
+            </p>
+            <div class="highlight-box">
+                <strong>Available Applications:</strong> MediaZone, Transportation, Wifi, Remote CIS, Weather, and SEAT
+            </div>
+        </div>
+
+        <div class="guide-section">
+            <h2><span class="step-number">2</span> How to Sign In</h2>
+            <p>You can sign in using one of two methods:</p>
+            <ul>
+                <li><strong>Accreditation Number:</strong> Use your 8-digit registration number and 4-digit CVV code. This gives you access to all applications you're authorized for.</li>
+                <li><strong>Third-Party Token:</strong> Use a 16-digit token (format: ####-####-####-####). Each token is specific to one application.</li>
+            </ul>
+        </div>
+
+        <div class="guide-section">
+            <h2><span class="step-number">3</span> Device Sessions</h2>
+            <p>
+                When you sign in, SARP remembers your browser for <strong>90 days</strong>. You won't need to sign in again
+                during this time when using the same browser.
+            </p>
+            <div class="highlight-box">
+                <strong>How it works:</strong>
+                <ul style="margin: 0.5rem 0 0 0;">
+                    <li>Each browser gets its own session</li>
+                    <li>Sessions last 90 days from login</li>
+                    <li>Multiple tabs in the same browser share the same session</li>
+                    <li>Different browsers need separate logins</li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="guide-section">
+            <h2><span class="step-number">4</span> Device Limits</h2>
+            <p>To prevent unauthorized sharing, there are limits on how many browsers/devices you can use:</p>
+            <ul>
+                <li><strong>Standard:</strong> Up to 3 devices per accreditation or token</li>
+                <li><strong>Multiple Devices:</strong> Add an email or phone number for unlimited device access</li>
+            </ul>
+            <p>
+                If you reach your device limit, you'll need to logout from an active session before adding a new device.
+            </p>
+        </div>
+
+        <div class="guide-section">
+            <h2><span class="step-number">5</span> Adding Email/Phone for Easy Access</h2>
+            <p>
+                You can link up to 2 email addresses and 2 phone numbers to your account. This allows:
+            </p>
+            <ul>
+                <li>Unlimited device access (no 3-device limit)</li>
+                <li>Login using email/phone with a one-time code</li>
+                <li>Easier access from multiple locations</li>
+            </ul>
+        </div>
+
+        <div class="guide-section">
+            <h2><span class="step-number">6</span> Multiple Applications</h2>
+            <p>
+                <strong>With Accreditation:</strong> Your first login grants access to all applications you're authorized for.
+                Switch between apps freely without re-authenticating.
+            </p>
+            <p>
+                <strong>With Token:</strong> Each token is specific to one application. You'll need different tokens for different apps.
+            </p>
+        </div>
+
+        <div class="note-box">
+            <strong>Note for IT Administrators:</strong> Kiosk/Workstation Mode is available for shared devices in organizational settings.
+            This feature is managed by IT administrators and allows multiple users on shared workstations.
+        </div>
+
+        <div style="margin-top: 2rem; padding-top: 1.5rem; border-top: 2px solid var(--border); text-align: center;">
+            <button onclick="window.close(); if (!window.closed) window.location.href='/'" class="btn">
+                Back to Login
+            </button>
+        </div>
+    </div>
+</body>
+</html>
