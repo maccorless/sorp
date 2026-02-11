@@ -69,7 +69,6 @@ document.getElementById('accreditation-form').addEventListener('submit', async (
     const accreditationNumber = document.getElementById('accreditation-number').value;
     const accreditationCvv = document.getElementById('accreditation-cvv').value;
     const deviceId = getOrCreateDeviceId();
-    const kioskMode = document.getElementById('accred-kiosk-mode').checked;
 
     try {
         const response = await fetch(`${API_BASE}/auth/accreditation`, {
@@ -87,13 +86,7 @@ document.getElementById('accreditation-form').addEventListener('submit', async (
         if (data.success) {
             storeSession(data.session_token, data.user_id);
             showSuccess('Authentication successful!');
-
-            // If kiosk mode is enabled, show modal to add contact
-            if (kioskMode) {
-                setTimeout(showKioskModal, 500);
-            } else {
-                setTimeout(redirectToMediaZone, 1000);
-            }
+            setTimeout(redirectToMediaZone, 1000);
         } else {
             showError(data.error || 'Authentication failed');
         }

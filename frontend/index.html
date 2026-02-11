@@ -97,12 +97,6 @@
                             required
                             autocomplete="current-password">
                     </div>
-                    <div class="form-group" style="margin-bottom: 1rem;">
-                        <label class="checkbox-label" style="display: flex; align-items: center; gap: 0.5rem; cursor: pointer;">
-                            <input type="checkbox" id="accred-kiosk-mode" style="width: auto;">
-                            <span>Kiosk/Workstation Mode</span>
-                        </label>
-                    </div>
                     <button type="submit" class="btn">Sign In with Accreditation</button>
                 </form>
 
@@ -194,7 +188,7 @@
     <!-- Kiosk Mode Modal -->
     <div id="kiosk-modal" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.5); z-index: 1000; align-items: center; justify-content: center;">
         <div style="background: white; border-radius: 16px; padding: 2.5rem; max-width: 500px; width: 90%; box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);">
-            <h2 style="color: var(--text-primary); margin-bottom: 1rem; font-size: 1.5rem;">Enable Unlimited Devices</h2>
+            <h2 style="color: var(--text-primary); margin-bottom: 1rem; font-size: 1.5rem;">Kiosk Mode Configuration</h2>
             <p style="color: var(--text-secondary); margin-bottom: 2rem; line-height: 1.6;">
                 Add an email or phone number to enable multiple device access for kiosks and workstations.
                 You can use this contact for future OTP login.
@@ -243,13 +237,12 @@
 
     <script src="auth.js"></script>
     <script>
-        // Show/hide Email/Phone tab based on kiosk mode checkboxes
-        const accredKioskCheckbox = document.getElementById('accred-kiosk-mode');
+        // Show/hide Email/Phone tab based on kiosk mode checkbox (Token tab only)
         const tokenKioskCheckbox = document.getElementById('token-kiosk-mode');
         const otpTab = document.getElementById('otp-tab');
 
         function updateOTPTabVisibility() {
-            if (accredKioskCheckbox.checked || tokenKioskCheckbox.checked) {
+            if (tokenKioskCheckbox && tokenKioskCheckbox.checked) {
                 otpTab.style.display = 'block';
             } else {
                 otpTab.style.display = 'none';
@@ -260,9 +253,6 @@
             }
         }
 
-        if (accredKioskCheckbox) {
-            accredKioskCheckbox.addEventListener('change', updateOTPTabVisibility);
-        }
         if (tokenKioskCheckbox) {
             tokenKioskCheckbox.addEventListener('change', updateOTPTabVisibility);
         }
