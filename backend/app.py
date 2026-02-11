@@ -1,7 +1,7 @@
 from flask import Flask, request, jsonify, send_from_directory
 from flask_cors import CORS
-import database as db
-import auth
+from backend import database as db
+from backend import auth
 import os
 
 # Get the project root directory
