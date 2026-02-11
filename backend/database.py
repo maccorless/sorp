@@ -35,15 +35,67 @@ def init_db():
         )
     ''')
 
-    # Devices table
+    # Apps table - defines all available apps
+    cursor.execute('''
+        CREATE TABLE IF NOT EXISTS apps (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            app_code TEXT UNIQUE NOT NULL,
+            app_name TEXT NOT NULL,
+            max_sessions INTEGER DEFAULT 3,
+            active BOOLEAN DEFAULT 1,
+            created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+        )
+    ''')
+
+    # Insert default apps if not exists
+    cursor.execute('''
+        INSERT OR IGNORE INTO apps (id, app_code, app_name, max_sessions) VALUES
+        (1, 'mediazone', 'MediaZone', 3),
+        (2, 'transport', 'Transportation', 3),
+        (3, 'wifi', 'Wifi', 3),
+        (4, 'remote-cis', 'Remote CIS', 3),
+        (5, 'weather', 'Weather', 3),
+        (6, 'seat', 'SEAT', 3)
+    ''')
+
+    # Accreditation apps - defines which apps each accreditation has access to
+    cursor.execute('''
+        CREATE TABLE IF NOT EXISTS accreditation_apps (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            accreditation_number TEXT NOT NULL,
+            app_id INTEGER NOT NULL,
+            authorized BOOLEAN DEFAULT 1,
+            FOREIGN KEY (app_id) REFERENCES apps(id),
+            UNIQUE(accreditation_number, app_id)
+        )
+    ''')
+
+    # App sessions table - tracks device access per app (replaces old devices table concept)
+    cursor.execute('''
+        CREATE TABLE IF NOT EXISTS app_sessions (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            device_id TEXT NOT NULL,
+            user_id INTEGER NOT NULL,
+            app_id INTEGER NOT NULL,
+            created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+            expires_at TIMESTAMP NOT NULL,
+            FOREIGN KEY (user_id) REFERENCES users(id),
+            FOREIGN KEY (app_id) REFERENCES apps(id),
+            UNIQUE(device_id, app_id)
+        )
+    ''')
+
+    # Keep old devices table for backward compatibility (will be migrated to app_sessions)
     cursor.execute('''
         CREATE TABLE IF NOT EXISTS devices (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
             device_id TEXT UNIQUE NOT NULL,
             user_id INTEGER NOT NULL,
+            app_id INTEGER DEFAULT 1,
             created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
             expires_at TIMESTAMP NOT NULL,
-            FOREIGN KEY (user_id) REFERENCES users(id)
+            FOREIGN KEY (user_id) REFERENCES users(id),
+            FOREIGN KEY (app_id) REFERENCES apps(id)
         )
     ''')
 
@@ -324,3 +376,118 @@ def get_all_users_with_details():
 
     conn.close()
     return users
+
+# ============================================================================
+# Multi-App Functions (future expansion)
+# ============================================================================
+
+def get_app_by_code(app_code):
+    """Get app by code (e.g., 'mediazone')."""
+    conn = get_db()
+    cursor = conn.cursor()
+    cursor.execute('SELECT * FROM apps WHERE app_code = ? AND active = 1', (app_code,))
+    app = cursor.fetchone()
+    conn.close()
+    return dict(app) if app else None
+
+def get_all_apps():
+    """Get all active apps."""
+    conn = get_db()
+    cursor = conn.cursor()
+    cursor.execute('SELECT * FROM apps WHERE active = 1 ORDER BY id')
+    apps = cursor.fetchall()
+    conn.close()
+    return [dict(a) for a in apps]
+
+def get_authorized_apps_for_accreditation(accreditation_number):
+    """Get list of apps this accreditation has access to."""
+    conn = get_db()
+    cursor = conn.cursor()
+    cursor.execute('''
+        SELECT a.*
+        FROM apps a
+        JOIN accreditation_apps aa ON a.id = aa.app_id
+        WHERE aa.accreditation_number = ? AND aa.authorized = 1 AND a.active = 1
+    ''', (accreditation_number,))
+    apps = cursor.fetchall()
+    conn.close()
+    return [dict(a) for a in apps]
+
+def set_accreditation_app_access(accreditation_number, app_id, authorized=True):
+    """Set whether an accreditation has access to an app."""
+    conn = get_db()
+    cursor = conn.cursor()
+    cursor.execute('''
+        INSERT OR REPLACE INTO accreditation_apps (accreditation_number, app_id, authorized)
+        VALUES (?, ?, ?)
+    ''', (accreditation_number, app_id, authorized))
+    conn.commit()
+    conn.close()
+
+def create_app_session(device_id, user_id, app_id):
+    """
+    Create or update app session for a specific app (90-day expiry).
+    Returns (device_id, None) on success or (None, error_message) on failure.
+    """
+    conn = get_db()
+    cursor = conn.cursor()
+
+    # Check if session exists for this device+app combination
+    cursor.execute('''
+        SELECT id FROM app_sessions
+        WHERE device_id = ? AND app_id = ?
+    ''', (device_id, app_id))
+    existing = cursor.fetchone()
+
+    # If this is a new session, check session limits for this app
+    if not existing:
+        # Get app max_sessions (or check if user has email for unlimited)
+        if not user_has_email(user_id):
+            cursor.execute('SELECT max_sessions FROM apps WHERE id = ?', (app_id,))
+            app = cursor.fetchone()
+            max_sessions = app['max_sessions'] if app else 3
+
+            # Count active sessions for this user+app
+            cursor.execute('''
+                SELECT COUNT(*) as count
+                FROM app_sessions
+                WHERE user_id = ? AND app_id = ? AND expires_at > ?
+            ''', (user_id, app_id, datetime.now()))
+            active_count = cursor.fetchone()['count']
+
+            if active_count >= max_sessions:
+                conn.close()
+                return None, f"Device limit reached ({max_sessions} devices max). Add an email address to your account for multiple devices."
+
+    expires_at = datetime.now() + timedelta(days=90)
+
+    if existing:
+        cursor.execute('''
+            UPDATE app_sessions
+            SET user_id = ?, expires_at = ?
+            WHERE device_id = ? AND app_id = ?
+        ''', (user_id, expires_at, device_id, app_id))
+    else:
+        cursor.execute('''
+            INSERT INTO app_sessions (device_id, user_id, app_id, expires_at)
+            VALUES (?, ?, ?, ?)
+        ''', (device_id, user_id, app_id, expires_at))
+
+    conn.commit()
+    conn.close()
+    return device_id, None
+
+def get_user_app_sessions(user_id):
+    """Get all active app sessions for a user."""
+    conn = get_db()
+    cursor = conn.cursor()
+    cursor.execute('''
+        SELECT aps.*, a.app_name, a.app_code
+        FROM app_sessions aps
+        JOIN apps a ON aps.app_id = a.id
+        WHERE aps.user_id = ? AND aps.expires_at > ?
+        ORDER BY a.app_name
+    ''', (user_id, datetime.now()))
+    sessions = cursor.fetchall()
+    conn.close()
+    return [dict(s) for s in sessions]

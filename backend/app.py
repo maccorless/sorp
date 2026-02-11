@@ -281,6 +281,29 @@ def admin_registrations():
     users = db.get_all_users_with_details()
     return jsonify({'users': users})
 
+@app.route('/api/admin/apps', methods=['GET'])
+def admin_apps():
+    """Get all apps for admin view."""
+    apps = db.get_all_apps()
+    return jsonify({'apps': apps})
+
+@app.route('/api/admin/apps/<int:app_id>', methods=['PUT'])
+def update_app_settings(app_id):
+    """Update app settings."""
+    data = request.json
+    max_sessions = data.get('max_sessions')
+
+    if not max_sessions or max_sessions < 1:
+        return jsonify({'success': False, 'error': 'Invalid max_sessions value'}), 400
+
+    conn = db.get_db()
+    cursor = conn.cursor()
+    cursor.execute('UPDATE apps SET max_sessions = ? WHERE id = ?', (max_sessions, app_id))
+    conn.commit()
+    conn.close()
+
+    return jsonify({'success': True})
+
 # Serve static files for frontend
 @app.route('/')
 def index():
